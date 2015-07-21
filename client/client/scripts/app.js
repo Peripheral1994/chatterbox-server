@@ -1,4 +1,4 @@
-$(document).ready(function(){
+  $(document).ready(function(){
   // GLOBAL VARIABLE TO PERSIST FRIENDS
   var friends = [];
 
@@ -7,10 +7,11 @@ $(document).ready(function(){
   */
   var getData = function(roomName){
     return $.ajax({
-      url: "https://api.parse.com/1/classes/chatterbox",
+      url: "http://127.0.0.1:3000/classes/messages",
       type: 'GET',
       contentType: 'application/json',
       success: function(data) {
+        console.log('getData: ', data);
         getRooms(data);
         insertMessages(data, roomName);
         boldFriendsMessages();
@@ -18,13 +19,13 @@ $(document).ready(function(){
 
       error: function(data) {
         console.log(data);
-      }
+      } 
     });
   };
 
   var postMessage = function(message) {
     $.ajax({
-      url: "https://api.parse.com/1/classes/chatterbox",
+      url: "http://127.0.0.1:3000/classes/messages",
       type: 'POST',
       data: JSON.stringify(message),
       contentType: 'application/json',
@@ -77,7 +78,18 @@ $(document).ready(function(){
     }
     rooms = _.uniq(rooms);
     rooms.forEach(function(item){
-      $('.roomsList').append("<option>" + item + "</option>");
+      var append = true;
+      if ($('.roomsList .user').length > 0){
+        $('.roomsList .user').each(function(index, option){
+          console.log('option: ' + option);
+          if (option.value === item){
+            append = false;
+          }
+        });
+      } 
+      if (append === true) {
+        $('.roomsList').append("<option class='user'>" + item + "</option>");
+      }
     });
   };
 
